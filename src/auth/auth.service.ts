@@ -22,7 +22,7 @@ export class AuthService {
         const user = await this.userService.createUser({ ...registerDto, password: hashPassword });
 
         // jwt token
-        const payload = { sub: user._id }
+        const payload = { sub: user._id, role: "admin" }
         const token = await this.jwtService.signAsync(payload);
         console.log("token: ", token);
 

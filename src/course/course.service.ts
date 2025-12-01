@@ -1,19 +1,35 @@
 import { Injectable } from '@nestjs/common';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
+import { User } from 'src/user/schema/user.schema';
+import { InjectModel } from '@nestjs/mongoose';
+import { privateDecrypt } from 'crypto';
+import { Model } from 'mongoose';
+import { Course } from './schema/course.schema';
 
 @Injectable()
 export class CourseService {
-  create(createCourseDto: CreateCourseDto) {
-    return 'This action adds a new course';
+  constructor(
+    @InjectModel(Course.name)
+    private courseModel: Model<Course>
+  ) {} 
+
+
+  async create(createCourseDto: CreateCourseDto) {
+    return  await this.courseModel.create({
+      name: createCourseDto.name,
+      description: createCourseDto.description,
+      level: createCourseDto.level,
+      price: createCourseDto.price
+    })
   }
 
   findAll() {
     return `This action returns all course`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} course`;
+  async findOne(id: string) {
+    return await this.courseModel.findById({_id: id});
   }
 
   update(id: number, updateCourseDto: UpdateCourseDto) {
